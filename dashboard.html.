@@ -12,7 +12,8 @@
 
     <script>
       const SUPABASE_URL = "https://epngmvsotwymyfmrtzfs.supabase.co";
-      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVwbmdtdnNvdHd5bXlmbXJ0emZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3MjEzNjMsImV4cCI6MjA3NjI5NzM2M30.z779Vflq8ip9qchjV4EqxM37p9hJmeQ87L-qLAXiJiI";
+      const SUPABASE_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVwbmdtdnNvdHd5bXlmbXJ0emZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3MjEzNjMsImV4cCI6MjA3NjI5NzM2M30.z779Vflq8ip9qchjV4EqxM37p9hJmeQ87L-qLAXiJiI";
 
       const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       const welcomeEl = document.getElementById("welcome");
