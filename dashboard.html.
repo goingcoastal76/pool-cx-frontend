@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Pool CX Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body style="font-family: sans-serif; text-align: center; margin-top: 100px;">
+    <h1>🏖️ Pool CX Dashboard</h1>
+    <p id="welcome">Loading...</p>
+    <button id="logout-btn" style="padding:10px 20px; margin-top:20px;">Logout</button>
+
+    <script>
+      const SUPABASE_URL = "https://epngmvsotwymyfmrtzfs.supabase.co";
+      const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVwbmdtdnNvdHd5bXlmbXJ0emZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3MjEzNjMsImV4cCI6MjA3NjI5NzM2M30.z779Vflq8ip9qchjV4EqxM37p9hJmeQ87L-qLAXiJiI";
+
+      const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      const welcomeEl = document.getElementById("welcome");
+
+      async function checkUser() {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if (!user) {
+          // Redirect to login if not logged in
+          window.location.href = "index.html";
+        } else {
+          welcomeEl.textContent = `Welcome, ${user.email}! You are logged in.`;
+        }
+      }
+
+      document.getElementById("logout-btn").addEventListener("click", async () => {
+        await supabaseClient.auth.signOut();
+        window.location.href = "index.html";
+      });
+
+      checkUser();
+    </script>
+  </body>
+</html>
