@@ -18,16 +18,24 @@
       const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       const welcomeEl = document.getElementById("welcome");
 
+      // Check if user is logged in
       async function checkUser() {
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        if (!user) {
-          // Redirect to login if not logged in
+        try {
+          const { data: { user }, error } = await supabaseClient.auth.getUser();
+          if (error) console.error("getUser error:", error);
+          if (!user) {
+            // Redirect to login if not logged in
+            window.location.href = "index.html";
+          } else {
+            welcomeEl.textContent = `Welcome, ${user.email}! You are logged in.`;
+          }
+        } catch (err) {
+          console.error("Unexpected error checking user:", err);
           window.location.href = "index.html";
-        } else {
-          welcomeEl.textContent = `Welcome, ${user.email}! You are logged in.`;
         }
       }
 
+      // Logout button
       document.getElementById("logout-btn").addEventListener("click", async () => {
         await supabaseClient.auth.signOut();
         window.location.href = "index.html";
