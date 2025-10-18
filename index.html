@@ -36,32 +36,3 @@
       redirectIfLoggedIn();
 
       document.getElementById("login-btn").addEventListener("click", async () => {
-        const email = emailInput.value;
-        const password = passwordInput.value;
-
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (error) {
-          // Try sign-up if user doesn’t exist yet
-          const { data: signupData, error: signupError } =
-            await supabaseClient.auth.signUp({ email, password });
-          if (signupError) {
-            statusEl.textContent = "❌ " + signupError.message;
-          } else {
-            statusEl.textContent =
-              "✅ Account created! Please check your email to confirm.";
-          }
-        } else {
-          statusEl.textContent = "✅ Logged in as " + data.user.email;
-          // Redirect to dashboard after login
-          setTimeout(() => {
-            window.location.href = "dashboard.html";
-          }, 1000);
-        }
-      });
-    </script>
-  </body>
-</html>
