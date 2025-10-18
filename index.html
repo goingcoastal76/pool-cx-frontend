@@ -15,7 +15,6 @@
     <p id="status" style="margin-top:20px;"></p>
 
     <script>
-      // Supabase credentials
       const SUPABASE_URL = "https://epngmvsotwymyfmrtzfs.supabase.co";
       const SUPABASE_KEY =
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVwbmdtdnNvdHd5bXlmbXJ0emZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA3MjEzNjMsImV4cCI6MjA3NjI5NzM2M30.z779Vflq8ip9qchjV4EqxM37p9hJmeQ87L-qLAXiJiI";
@@ -26,13 +25,63 @@
       const passwordInput = document.getElementById("password");
       const statusEl = document.getElementById("status");
 
-      // Redirect to dashboard if already logged in
+      // Redirect if already logged in
       async function redirectIfLoggedIn() {
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        if (user) {
-          window.location.href = "dashboard.html";
+        try {
+          const { data: { user }, error } = await supabaseClient.auth.getUser();
+          if (error) {
+            console.error("Error fetching user:", error);
+          }
+          if (user) {
+            console.log("User already logged in:", user.email);
+            window.location.href = "dashboard.html";
+          }
+        } catch (err) {
+          console.error("Unexpected error checking login:", err);
         }
       }
       redirectIfLoggedIn();
 
       document.getElementById("login-btn").addEventListener("click", async () => {
+        const email = emailInput.value;
+        const password = passwordInput.value;
+
+        console.log("Login attempt:", email);
+
+        try {
+          const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email,
+            password,
+          });
+
+          if (error) {
+            console.warn("Sign in failed, trying signup...", error.message);
+
+            // Try sign-up if user doesn’t exist yet
+            const { data: signupData, error: signupError } =
+              await supabaseClient.auth.signUp({ email, password });
+
+            if (signupError) {
+              console.error("Sign up failed:", signupError.message);
+              statusEl.textContent = "❌ " + signupError.message;
+            } else {
+              console.log("Sign up success:", signupData);
+              statusEl.textContent =
+                "✅ Account created! Please check your email to confirm.";
+            }
+          } else {
+            console.log("Sign in success:", data);
+            statusEl.textContent = "✅ Logged in as " + data.user.email;
+
+            setTimeout(() => {
+              window.location.href = "dashboard.html";
+            }, 1000);
+          }
+        } catch (err) {
+          console.error("Unexpected error during login/signup:", err);
+          statusEl.textContent = "❌ An unexpected error occurred. Check console.";
+        }
+      });
+    </script>
+  </body>
+</html>
