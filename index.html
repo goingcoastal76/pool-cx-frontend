@@ -1,11 +1,46 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8">
-    <title>Pool CX Test Page</title>
+    <meta charset="UTF-8" />
+    <title>Pool CX Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body style="font-family: sans-serif; text-align: center; margin-top: 100px;">
-    <h1>🚀 Hello from Pool CX!</h1>
-    <p>If you can read this, your Vercel setup is working perfectly.</p>
+    <h1>🔐 Pool CX Login</h1>
+
+    <input id="email" type="email" placeholder="Email" style="padding:10px; margin:5px;"><br>
+    <input id="password" type="password" placeholder="Password" style="padding:10px; margin:5px;"><br>
+    <button id="login-btn" style="padding:10px 20px;">Login / Sign Up</button>
+
+    <p id="status" style="margin-top:20px;"></p>
+
+    <script>
+      // TODO: Replace with your Supabase URL and anon key
+      const SUPABASE_URL = "https://YOUR-PROJECT-URL.supabase.co";
+      const SUPABASE_KEY = "YOUR-ANON-KEY";
+      const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+      const statusEl = document.getElementById("status");
+
+      document.getElementById("login-btn").addEventListener("click", async () => {
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+        if (error) {
+          // Try to sign up if user doesn’t exist yet
+          const { data: signupData, error: signupError } = await supabase.auth.signUp({ email, password });
+          if (signupError) {
+            statusEl.textContent = "❌ " + signupError.message;
+          } else {
+            statusEl.textContent = "✅ Account created! Please check your email to confirm.";
+          }
+        } else {
+          statusEl.textContent = "✅ Logged in as " + data.user.email;
+        }
+      });
+    </script>
   </body>
 </html>
